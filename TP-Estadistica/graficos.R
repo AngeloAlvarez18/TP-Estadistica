@@ -3,8 +3,9 @@
 # 2. como poner q se haga la suma acumulativa solamente de las primeras 3 columnas
 # 3. cada cuanto tomar los intervalos (si tomo uno en especifico, los ultimos valores del 
 # intervalo no los toma)
-# 4. box plot para variables continuas, pero no hay
+# 4. box plot para variables continuas, pero no hay (nora dijo de usar eso)
 # 5. en la funcion seq hace intervalo abierto a izquierda, pero ese valor se necesita (como se arregla)
+# 6. preguntar por comparacion de graficos, error "number of columns of result is not a multiple of vector length"
 
 #-------------------------------------------------------------------------------------------------
 library(readxl)
@@ -13,11 +14,24 @@ datos <- read_excel("Base4.xls", col_names = TRUE)
 attach(datos) 
 
 #---------------------------------------ALTURA-------------------------------------------------
-#summary(altura)
-length_interval = trunc(sqrt(length(altura)))
-breaks_altura = seq(min(altura), max(altura), 5) # Intervalos para la tabla de freq
-#breaks_altura = seq(min(altura), max(altura), 5) # Intervalos para la tabla de freq
 
+#--------------------------------------------
+# tabla de frecuencia altura
+breaks_altura = seq(0, max(altura), 5) # Intervalos para la tabla de freq
+
+rango_altura = cut(altura, breaks = breaks_altura, right = TRUE)
+freq_abs_altura = table(rango_altura)
+
+freq_rel_altura = round(freq_abs_altura / 350, 4)
+freq_abs_ac_altura = cumsum(freq_abs_altura)
+freq_rel_ac_altura = cumsum(freq_rel_altura)
+porc_altura = freq_rel_altura * 100
+porc_ac_altura = freq_rel_ac_altura * 100
+tabla_altura = cbind(freq_abs_altura, freq_rel_altura, porc_altura, freq_abs_ac_altura,
+                     freq_rel_ac_altura, porc_ac_altura)
+total_altura = apply(tabla_altura, 2, sum)
+tabla_altura_total = rbind(tabla_altura, total_altura)
+#--------------------------------------------
 rango_altura = cut(altura, breaks = breaks_altura, right = TRUE)
 freq_abs_altura = table(rango_altura)
 
@@ -35,18 +49,6 @@ freq_rel_acum = cumsum(freq_rel)
 hist(freq_rel, breaks = length_interval, col = "red", ylab = "Cantidad", xlab = "Altura",right = FALSE)
 #preguntar por grafico de freq_rel_acum
 
-#--------------------------------------------
-# tabla de frecuencia altura
-freq_rel_altura = round(freq_abs_altura / sum(freq_abs_altura), 4)
-freq_abs_ac_altura = cumsum(freq_abs_altura)
-freq_rel_ac_altura = cumsum(freq_rel_altura)
-porc_altura = freq_rel_altura * 100
-porc_ac_altura = freq_rel_ac_altura * 100
-tabla_altura = cbind(freq_abs_altura, freq_rel_altura, porc_altura, freq_abs_ac_altura,
-                     freq_rel_ac_altura, porc_ac_altura)
-total_altura = apply(tabla_altura, 2, sum)
-tabla_altura_total = rbind(tabla_altura, total_altura)
-#--------------------------------------------
 
 
 #---------------------------------------ESPECIE-------------------------------------------------
@@ -57,11 +59,8 @@ freq_abs = table(especie_order)
 freq_rel = prop.table(table(especie_order))
 porc = freq_rel * 100
 tabla = cbind(freq_abs, freq_rel, porc)
-
-
-#plot(altura, inclinacio)
-
 #--------------------------------------------
+
 freq_abs_especie = table(especie_order)
 # tabla de frecuencia especie
 freq_rel_especie = round(freq_abs_especie / sum(freq_abs_especie), 9) # un 9 xq sino no da exacta la tabla
@@ -78,7 +77,7 @@ tabla_especie_total2 = rbind(tabla_especie)
 
 #---------------------------------------DIAMETRO-------------------------------------------------
 # tabla de frecuencia diametro
-breaks_diametro = seq(min(diametro), max(diametro), 20) # Intervalos para la tabla de freq
+breaks_diametro = seq(0, max(diametro), 20) # Intervalos para la tabla de freq
 rango_diametro = cut(diametro, breaks = breaks_diametro, right = TRUE)
 freq_abs_diametro = table(rango_diametro)
 freq_rel_diametro = round(freq_abs_diametro / sum(freq_abs_diametro), 4)
@@ -91,11 +90,11 @@ tabla_diametro = cbind(freq_abs_diametro, freq_rel_diametro, porc_diametro, freq
 total_diametro = apply(tabla_diametro, 2, sum)
 tabla_diametro_total = rbind(tabla_diametro, total_diametro)
 #--------------------------------------------
-tallo_y_hoja_diametro = barplot(freq_abs_diametro, col = "blue")
+tallo_y_hoja_diametro = barplot(freq_abs_diametro, col = "blue", ylab = "Cantidad", xlab = "Diametro")
 
 #---------------------------------------INCLINACION-------------------------------------------------
 # tabla de frecuencia inclinacion
-breaks_inclinacion = seq(from = -1, max(inclinacion), 10) # Intervalos para la tabla de freq
+breaks_inclinacion = seq(0, max(inclinacion), 5) # Intervalos para la tabla de freq
 rango_inclinacion = cut(inclinacion, breaks = breaks_inclinacion, right = TRUE)
 freq_abs_inclinacion = table(rango_inclinacion)
 freq_rel_inclinacion = round(freq_abs_inclinacion / sum(freq_abs_inclinacion), 4)
@@ -111,7 +110,8 @@ tabla_inclinacion_total = rbind(tabla_inclinacion, total_inclinacion)
 
 
 
-
+dotchart(freq_abs_inclinacion)
+barplot(freq_abs_inclinacion)
 ## FALTA GRAFICO
 
 
@@ -137,7 +137,6 @@ porc_ac_origen = freq_rel_ac_origen * 100
 tabla_origen = cbind(freq_abs_origen, freq_rel_origen, porc_origen)
 total_origen = apply(tabla_origen, 2, sum)
 tabla_origen_total = rbind(tabla_origen, total)
-tabla_origen_total2 = rbind(tabla_origen)
 
 #grafico de torta para el origen
 colores = c("red", "blue")
@@ -165,4 +164,22 @@ total_brotes = apply(tabla_brotes, 2, sum)
 tabla_brotes_total = rbind(tabla_brotes, total_brotes)
 
 barplot(freq_rel_brotes)
+
+
+#---------------------------------------comparar brotes con diametro-------------------------------------------------
+# Crear los datos
+datos1 <- c(10, 20, 30, 40, 50)
+datos2 <- c(100, 200, 300, 400, 500)
+nombres <- c("A", "B", "C", "D", "E")
+
+# Crear el gráfico de barras agrupadas
+barplot(
+  #rbind(datos1, datos2),
+  rbind(freq_rel_diametro, freq_rel_altura),
+  beside = TRUE,
+  names.arg = nombres,
+  ylab = "Datos 1 / Datos 2",
+  col = c("blue", "red")
+)
+legend("topright", legend = c("Datos 1", "Datos 2"), fill = c("blue", "red"))
 
