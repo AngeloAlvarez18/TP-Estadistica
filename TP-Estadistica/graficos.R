@@ -1,23 +1,20 @@
 #---------------------------------------PREGUNTAS-------------------------------------------------
-# 1. en la tabla de frecuencia, frecuencia relativa termina en 1.0001 o 0.9999, bien / mal?
 # 2. como poner q se haga la suma acumulativa solamente de las primeras 3 columnas
 # 3. cada cuanto tomar los intervalos (si tomo uno en especifico, los ultimos valores del 
 # intervalo no los toma)
-# 4. box plot para variables continuas, pero no hay (nora dijo de usar eso)
-# 5. en la funcion seq hace intervalo abierto a izquierda, pero ese valor se necesita (como se arregla)
-# 6. preguntar por comparacion de graficos, error "number of columns of result is not a multiple of vector length"
 
 #-------------------------------------------------------------------------------------------------
 library(readxl)
 datos <- read_excel("Base4.xls", col_names = TRUE)
 #acceder a las columnas por nombre
 attach(datos) 
+#length_interval = round(sqrt(altura))
 
 #---------------------------------------ALTURA-------------------------------------------------
 
 #--------------------------------------------
 # tabla de frecuencia altura
-breaks_altura = seq(0, max(altura), 5) # Intervalos para la tabla de freq
+breaks_altura = seq(0, 40, 5) # Intervalos para la tabla de freq
 
 rango_altura = cut(altura, breaks = breaks_altura, right = TRUE)
 freq_abs_altura = table(rango_altura)
@@ -32,22 +29,23 @@ tabla_altura = cbind(freq_abs_altura, freq_rel_altura, porc_altura, freq_abs_ac_
 total_altura = apply(tabla_altura, 2, sum)
 tabla_altura_total = rbind(tabla_altura, total_altura)
 #--------------------------------------------
-rango_altura = cut(altura, breaks = breaks_altura, right = TRUE)
-freq_abs_altura = table(rango_altura)
 
-mean(altura)
-median(altura)
+#mean(altura)
+#median(altura)
 # histograma de altura
 
-hist(altura, breaks = length_interval, col = "green", ylab = "Cantidad",
-    xlab = "Altura", main = "Frecuencia absoluta de la altura")
+hist(altura, breaks = 8, col = "green", ylab = "Cantidad",
+    xlab = "Altura", main = "Frecuencia absoluta de la altura", axes = FALSE)
+axis(1, at=breaks_altura)
+axis(2, at=c(seq(0,100,10)))
 
 
-freq_rel = prop.table(altura)
-freq_rel_acum = cumsum(freq_rel)
+freq_rel_altura = prop.table(altura)
+freq_rel_acum_altura = cumsum(freq_rel_altura)
 # histograma de frecuencia relativa altura
-hist(freq_rel, breaks = length_interval, col = "red", ylab = "Cantidad", xlab = "Altura",right = FALSE)
-#preguntar por grafico de freq_rel_acum
+hist(freq_rel_altura, breaks = 8, col = "red", ylab = "Cantidad", xlab = "Altura",right = FALSE)
+
+
 
 
 
@@ -60,7 +58,6 @@ freq_rel = prop.table(table(especie_order))
 porc = freq_rel * 100
 tabla = cbind(freq_abs, freq_rel, porc)
 #--------------------------------------------
-
 freq_abs_especie = table(especie_order)
 # tabla de frecuencia especie
 freq_rel_especie = round(freq_abs_especie / sum(freq_abs_especie), 9) # un 9 xq sino no da exacta la tabla
@@ -74,6 +71,7 @@ tabla_especie_total = rbind(tabla_especie, total)
 tabla_especie_total2 = rbind(tabla_especie)
 #--------------------------------------------
 
+boxplot(altura~especie)
 
 #---------------------------------------DIAMETRO-------------------------------------------------
 # tabla de frecuencia diametro
