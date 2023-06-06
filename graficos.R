@@ -2,6 +2,7 @@
 # 2. como poner q se haga la suma acumulativa solamente de las primeras 3 columnas
 # 3. cada cuanto tomar los intervalos (si tomo uno en especifico, los ultimos valores del 
 # intervalo no los toma)
+# install.packages("readxl")
 
 #-------------------------------------------------------------------------------------------------
 library(readxl)
@@ -46,9 +47,6 @@ freq_rel_acum_altura = cumsum(freq_rel_altura)
 hist(freq_rel_altura, breaks = 8, col = "red", ylab = "Cantidad", xlab = "Altura",right = FALSE)
 
 
-
-
-
 #---------------------------------------ESPECIE-------------------------------------------------
 #grafico para las especies
 especie_order = ordered(especie, levels = c("Ceibo", "Eucalipto", "Álamo", "Palo borracho",
@@ -69,6 +67,8 @@ tabla_especie = cbind(freq_abs_especie, freq_rel_especie, porc_especie)
 total = apply(tabla_especie, 2, sum)
 tabla_especie_total = rbind(tabla_especie, total)
 tabla_especie_total2 = rbind(tabla_especie)
+barplot(freq_abs_especie, las = 3, ylim = c(0,80), cex.names = 0.8, col = colorRampPalette(c("lightblue", "darkblue"))(9))
+axis(2, seq(0,80,10))
 #--------------------------------------------
 
 boxplot(altura~especie)
@@ -89,11 +89,10 @@ total_diametro = apply(tabla_diametro, 2, sum)
 tabla_diametro_total = rbind(tabla_diametro, total_diametro)
 #--------------------------------------------
 tallo_y_hoja_diametro = barplot(freq_abs_diametro, col = "blue", ylab = "Cantidad", xlab = "Diametro")
-
 #---------------------------------------INCLINACION-------------------------------------------------
 # tabla de frecuencia inclinacion
-breaks_inclinacion = seq(0, max(inclinacion), 5) # Intervalos para la tabla de freq
-rango_inclinacion = cut(inclinacion, breaks = breaks_inclinacion, right = TRUE)
+breaks_inclinacion = seq(0, max(inclinacio), 5) # Intervalos para la tabla de freq
+rango_inclinacion = cut(inclinacio, breaks = breaks_inclinacion, right = TRUE)
 freq_abs_inclinacion = table(rango_inclinacion)
 freq_rel_inclinacion = round(freq_abs_inclinacion / sum(freq_abs_inclinacion), 4)
 freq_abs_ac_inclinacion = cumsum(freq_abs_inclinacion)
@@ -106,11 +105,14 @@ total_inclinacion = apply(tabla_inclinacion, 2, sum)
 tabla_inclinacion_total = rbind(tabla_inclinacion, total_inclinacion)
 
 
+x <- 1:10
+y <- c(2, 4, 6, 8, 10, 9, 7, 5, 3, 1)
+plot(x, y, type = "l", lwd = 2, col = "blue", xlab = "Eje X", ylab = "Eje Y", main = "Gráfico de línea")
 
-
+hist(tabla_inclinacion)
 dotchart(freq_abs_inclinacion)
 barplot(freq_abs_inclinacion)
-## FALTA GRAFICO
+
 
 
 
