@@ -2,11 +2,11 @@
 # 2. como poner q se haga la suma acumulativa solamente de las primeras 3 columnas
 # 3. cada cuanto tomar los intervalos (si tomo uno en especifico, los ultimos valores del 
 # intervalo no los toma)
-# install.packages("readxl")
 
 #-------------------------------------------------------------------------------------------------
 library(readxl)
-datos <- read_excel("Base4.xls", col_names = TRUE)
+ruta_archivo <- "~/Desktop/codes/TP-Estadistica/Base4.xls"
+datos <- read_excel(ruta_archivo, col_names = TRUE)
 #acceder a las columnas por nombre
 attach(datos) 
 #length_interval = round(sqrt(altura))
@@ -45,6 +45,10 @@ freq_rel_altura = prop.table(altura)
 freq_rel_acum_altura = cumsum(freq_rel_altura)
 # histograma de frecuencia relativa altura
 hist(freq_rel_altura, breaks = 8, col = "red", ylab = "Cantidad", xlab = "Altura",right = FALSE)
+boxplot(altura, col="orange")
+
+
+
 
 
 #---------------------------------------ESPECIE-------------------------------------------------
@@ -67,8 +71,6 @@ tabla_especie = cbind(freq_abs_especie, freq_rel_especie, porc_especie)
 total = apply(tabla_especie, 2, sum)
 tabla_especie_total = rbind(tabla_especie, total)
 tabla_especie_total2 = rbind(tabla_especie)
-barplot(freq_abs_especie, las = 3, ylim = c(0,80), cex.names = 0.8, col = colorRampPalette(c("lightblue", "darkblue"))(9))
-axis(2, seq(0,80,10))
 #--------------------------------------------
 
 boxplot(altura~especie)
@@ -89,10 +91,14 @@ total_diametro = apply(tabla_diametro, 2, sum)
 tabla_diametro_total = rbind(tabla_diametro, total_diametro)
 #--------------------------------------------
 tallo_y_hoja_diametro = barplot(freq_abs_diametro, col = "blue", ylab = "Cantidad", xlab = "Diametro")
+
+plot(freq_rel_diametro, col="blue", ylim=c(0,0.5), ylab = "Frecuencia", xlab= "Intervalos diametro")
+hist(diametro, col="red", ylim=c(0,200), ylab="Frecuencia", xlab="Diametro")
+
 #---------------------------------------INCLINACION-------------------------------------------------
 # tabla de frecuencia inclinacion
-breaks_inclinacion = seq(0, max(inclinacio), 5) # Intervalos para la tabla de freq
-rango_inclinacion = cut(inclinacio, breaks = breaks_inclinacion, right = TRUE)
+breaks_inclinacion = seq(0, max(inclinacio)+5, 5) # Intervalos para la tabla de freq
+rango_inclinacion = cut(inclinacio, breaks = breaks_inclinacion, right = FALSE)
 freq_abs_inclinacion = table(rango_inclinacion)
 freq_rel_inclinacion = round(freq_abs_inclinacion / sum(freq_abs_inclinacion), 4)
 freq_abs_ac_inclinacion = cumsum(freq_abs_inclinacion)
@@ -105,15 +111,13 @@ total_inclinacion = apply(tabla_inclinacion, 2, sum)
 tabla_inclinacion_total = rbind(tabla_inclinacion, total_inclinacion)
 
 
-x <- 1:10
-y <- c(2, 4, 6, 8, 10, 9, 7, 5, 3, 1)
-plot(x, y, type = "l", lwd = 2, col = "blue", xlab = "Eje X", ylab = "Eje Y", main = "Gráfico de línea")
 
-hist(tabla_inclinacion)
+
 dotchart(freq_abs_inclinacion)
-barplot(freq_abs_inclinacion)
-
-
+barplot(freq_abs_inclinacion, xlab = "Inclinacion", ylab="Frecuencia", ylim = c(0,300)
+        , col="red")
+## FALTA GRAFICO
+summary(inclinacio)
 
 
 
@@ -163,9 +167,14 @@ tabla_brotes = cbind(freq_abs_brotes, freq_rel_brotes, porc_brotes, freq_abs_ac_
 total_brotes = apply(tabla_brotes, 2, sum)
 tabla_brotes_total = rbind(tabla_brotes, total_brotes)
 
-barplot(freq_rel_brotes)
+#barplot(freq_abs_brotes, names = c(1, 2, 3, 4,5,6,7,8), ylim = c(0,120), col = "green", ylab="Frecuencia")
 
+summary(brotes)
+# Histograma de brotes
+hist(brotes, breaks = breaks_brotes, col="green", ylab="Frecuencia",
+     xlab="Brotes", ylim=c(0,140))
 
+#axis(2, at=c(seq(0,120,10)))
 #---------------------------------------comparar brotes con diametro-------------------------------------------------
 # Crear los datos
 datos1 <- c(10, 20, 30, 40, 50)
@@ -173,13 +182,12 @@ datos2 <- c(100, 200, 300, 400, 500)
 nombres <- c("A", "B", "C", "D", "E")
 
 # Crear el gráfico de barras agrupadas
-barplot(
-  #rbind(datos1, datos2),
-  rbind(freq_rel_diametro, freq_rel_altura),
-  beside = TRUE,
-  names.arg = nombres,
-  ylab = "Datos 1 / Datos 2",
-  col = c("blue", "red")
-)
+#barplot(
+  #rbind(freq_rel_diametro, freq_rel_altura),
+  #beside = TRUE,
+  #names.arg = nombres,
+  #ylab = "Datos 1 / Datos 2",
+  #col = c("blue", "red")
+#)
 legend("topright", legend = c("Datos 1", "Datos 2"), fill = c("blue", "red"))
 
