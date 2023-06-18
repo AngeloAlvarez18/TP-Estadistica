@@ -45,10 +45,8 @@ freq_rel_altura = prop.table(altura)
 freq_rel_acum_altura = cumsum(freq_rel_altura)
 # histograma de frecuencia relativa altura
 hist(freq_rel_altura, breaks = 8, col = "red", ylab = "Cantidad", xlab = "Altura",right = FALSE)
-boxplot(altura, col="orange")
-
-
-
+title_box = strsplit(c("Altura en metros de los arboles; de la ciudad de Buenos Aires"), split = ";")
+boxplot(altura, col="orange", ylab="Frecuencia", main=title_box)
 
 
 #---------------------------------------ESPECIE-------------------------------------------------
@@ -72,6 +70,7 @@ total = apply(tabla_especie, 2, sum)
 tabla_especie_total = rbind(tabla_especie, total)
 tabla_especie_total2 = rbind(tabla_especie)
 #--------------------------------------------
+hist(freq_abs_especie)
 
 boxplot(altura~especie)
 
@@ -93,7 +92,8 @@ tabla_diametro_total = rbind(tabla_diametro, total_diametro)
 tallo_y_hoja_diametro = barplot(freq_abs_diametro, col = "blue", ylab = "Cantidad", xlab = "Diametro")
 
 plot(freq_rel_diametro, col="blue", ylim=c(0,0.5), ylab = "Frecuencia", xlab= "Intervalos diametro")
-hist(diametro, col="red", ylim=c(0,200), ylab="Frecuencia", xlab="Diametro")
+title_diam = strsplit(c("Diametro en metros de los arboles; de la ciudad de Buenos Aires"), split = ";")
+hist(diametro, col="red", ylim=c(0,170), ylab="Frecuencia", xlab="Diametro", main=title_diam)
 
 #---------------------------------------INCLINACION-------------------------------------------------
 # tabla de frecuencia inclinacion
